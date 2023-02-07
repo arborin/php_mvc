@@ -7,10 +7,18 @@ $requestMethod = $_SERVER['REQUEST_METHOD'] ?? "GET";
 $requestPath = $_SERVER['REQUEST_URI'] ?? '/';
 
 
+function redirectForeverTo($path)
+{
+    header("Location: {$path}", $replace = true, $code = 301);
+    exit;
+}
+
 
 if ($requestMethod === "GET" and $requestPath === '/') {
     echo "<h1>HELLO</h1>HELLO WORLD";
+} else if ($requestPath === '/old') {
+    redirectForeverTo('/');
 } else {
     // echo "404 not found";
-    echo (__DIR__ . '/includes/404.php');
+    include(__DIR__ . '\includes\404.php');
 }
