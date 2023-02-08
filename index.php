@@ -1,11 +1,11 @@
 <?php
 
-// phpinfo();
-// var_dump(getenv('PHP_ENV'), $_SERVER, $_REQUEST);
 
-$requestMethod = $_SERVER['REQUEST_METHOD'] ?? "GET";
-$requestPath = $_SERVER['REQUEST_URI'] ?? '/';
+$requestMethod  = $_SERVER['REQUEST_METHOD'] ?? "GET";
+$requestPath    = $_SERVER['REQUEST_URI'] ?? '/';
 
+
+echo "REQUEST_METHOD: $requestMethod, REQUEST_URI: $requestPath";
 
 function redirectForeverTo($path)
 {
@@ -45,6 +45,19 @@ $paths = array_merge(
     array_keys($routes['PATCH']),
     array_keys($routes['DELETE']),
     array_keys($routes['HEAD']),
-    array_keys($routes['404']),
-    array_keys($routes['400']),
 );
+
+
+if (isset($routes[$requestMethod], $routes[$requestMethod][$requestPath])) {
+
+    $routes[$requestMethod][$requestPath]();
+} else if (in_array($requestPath, $paths)) {
+    // the path is defined, but not for this request method;
+    // so we show a 400 error (which means "Bad Request")
+    $routes['400']();
+} else {
+    // the path isn't allowed for any request method
+    // which probably means they tried a url that the
+    // application doesn't support
+    $routes['404']();
+}
